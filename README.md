@@ -1,77 +1,303 @@
 # Sistema de Gestión de Torneos de Esports
-UCM · ECI224 Base de Datos · Evaluación 3 (Proyecto Final) · Oracle Database 21c XE + PHP 8 (OCI8)
 
-## Contenido
-| Archivo | Descripción |
+UCM · ECI224 Base de Datos · Evaluación 3 (Proyecto Final) · Oracle Database 21c XE + PHP 8 + XAMPP + OCI8
+
+Proyecto final orientado a la administración de torneos de Esports mediante una aplicación web en PHP conectada a Oracle. La solución utiliza una arquitectura de dos capas: la interfaz PHP se encarga de la presentación e invocación de objetos, mientras que la lógica principal de negocio reside en Oracle mediante PL/SQL.
+
+> Todos los objetos principales de la base de datos utilizan el prefijo `AV_JP_RM_BE_`.
+
+## Contenido del proyecto
+
+| Archivo / carpeta | Descripción |
 |---|---|
-| `limpieza.sql` | Limpia por completo la base de datos para ingresar todas las tablas, procedures, triggers, etc nuevamente |
-| `script.sql` | Script completo y estructurado: tablas 3FN, secuencias, funciones, procedimientos, cursores, triggers y datos de prueba |
-| `app/` | Aplicación web PHP (arquitectura de 2 capas: cliente PHP ↔ servidor Oracle con la lógica en PL/SQL) |
+| `AV_JP_RM_BE_PROYECTO_SIMPLIFICADO.sql` | Script completo de Oracle: 19 tablas en 3FN, 16 secuencias, 3 funciones, 46 procedimientos, cursores, 2 triggers y datos de prueba. |
+| `AV_JP_RM_BE_MODELO_3FN_STARUML.mdj` | Modelo gráfico de la base de datos en 3FN para abrir y editar en StarUML. |
+| `AV_JP_RM_BE_ESPORTS_WEB/` | Aplicación web PHP desarrollada para XAMPP y conectada a Oracle mediante OCI8. |
+| `AV_JP_RM_BE_ESPORTS_WEB/sql/AV_JP_RM_BE_PROYECTO_SIMPLIFICADO.sql` | Copia del script Oracle incluida dentro del proyecto web. |
+| `AV_JP_RM_BE_ESPORTS_WEB/MAPA_PARA_PRESENTACION.txt` | Resumen de los módulos y objetos PL/SQL utilizados, pensado como apoyo para la defensa. |
+| `README.md` | Instrucciones generales de instalación, ejecución y demostración del proyecto. |
 
-## 1. Base de datos (Oracle XE 21c)
-1. Como `SYSTEM`, conectado a `XEPDB1`, crear el esquema (una sola vez):
-   ```sql
-   CREATE USER esports IDENTIFIED BY esports2026 DEFAULT TABLESPACE users QUOTA UNLIMITED ON users;
-   GRANT CREATE SESSION, CREATE TABLE, CREATE SEQUENCE, CREATE PROCEDURE, CREATE TRIGGER, CREATE VIEW TO esports;
-   ```
-2. Conectarse como `esports` en SQL Developer, abrir `script.sql` y ejecutarlo con **Ejecutar script (F5)**.
-   El script se puede re-ejecutar: borra y recrea todo.
-3. Al final deben verse los mensajes `OK ...` de la carga y la consulta de verificación con **0 objetos inválidos**.
+## 1. Base de datos — Oracle XE 21c
 
-## 2. Aplicación (XAMPP en Windows)
-1. Instalar **Oracle Instant Client** (Basic, 64 bits, versión 19 o 21) y agregar su carpeta al `PATH` de Windows.
-2. En `C:\xampp\php\php.ini` descomentar/agregar `extension=oci8_19` (para Instant Client 19/21 con PHP 8) y reiniciar Apache.
-   Comprobar en `phpinfo()` que aparece la sección **oci8**. Si la DLL `php_oci8_19.dll` no está en `C:\xampp\php\ext`, descargar la versión de OCI8 para su PHP desde PECL (pecl.php.net/package/oci8).
-3. Copiar la carpeta `app` a `C:\xampp\htdocs\esports`.
-4. Revisar `app/config/config.php` (usuario, clave y `localhost:1521/XEPDB1`).
-5. Abrir `http://localhost/esports/`.
+### 1.1 Crear el usuario/esquema
+
+Conectarse como `SYSTEM` a `XEPDB1` y ejecutar una sola vez:
+
+```sql
+CREATE USER ESPORTS IDENTIFIED BY ESPORTS2026
+DEFAULT TABLESPACE USERS
+QUOTA UNLIMITED ON USERS;
+
+GRANT CREATE SESSION,
+      CREATE TABLE,
+      CREATE SEQUENCE,
+      CREATE PROCEDURE,
+      CREATE TRIGGER
+TO ESPORTS;
+```
+
+Después conectarse en SQL Developer con:
+
+- Usuario: `ESPORTS`
+- Contraseña: `ESPORTS2026`
+- Host: `localhost`
+- Puerto: `1521`
+- Servicio: `XEPDB1`
+
+### 1.2 Ejecutar el script
+
+Abrir el archivo:
+
+```text
+AV_JP_RM_BE_PROYECTO_SIMPLIFICADO.sql
+```
+
+y ejecutarlo en SQL Developer utilizando **Ejecutar script (F5)**.
+
+El script crea:
+
+- 19 tablas normalizadas hasta 3FN.
+- 16 secuencias.
+- 3 funciones de negocio.
+- 46 procedimientos almacenados.
+- Cursores explícitos y `SYS_REFCURSOR`.
+- 2 triggers de monitoreo.
+- Datos iniciales para realizar pruebas.
+
+> Importante: el script está pensado para ejecutarse sobre un **esquema limpio**. No elimina automáticamente los objetos existentes. Si se necesita volver a ejecutarlo desde cero, primero se deben eliminar los objetos anteriores o recrear el esquema `ESPORTS`.
+
+### 1.3 Comprobar objetos inválidos
+
+Después de ejecutar el script se puede comprobar que no existan procedimientos, funciones o triggers inválidos con:
+
+```sql
+SELECT OBJECT_NAME, OBJECT_TYPE, STATUS
+FROM USER_OBJECTS
+WHERE STATUS = 'INVALID';
+```
+
+El resultado esperado es **0 filas**.
+
+## 2. Aplicación web — XAMPP en Windows
+
+La aplicación se encuentra en:
+
+```text
+AV_JP_RM_BE_ESPORTS_WEB/
+```
+
+### 2.1 Copiar el proyecto a XAMPP
+
+Copiar la carpeta completa dentro de:
+
+```text
+C:\xampp\htdocs\
+```
+
+Debe quedar aproximadamente así:
+
+```text
+C:\xampp\htdocs\AV_JP_RM_BE_ESPORTS_WEB\
+```
+
+### 2.2 Instalar y habilitar OCI8
+
+La aplicación utiliza `oci_connect()` para comunicarse con Oracle.
+
+1. Verificar la versión y arquitectura de PHP utilizada por XAMPP mediante `phpinfo()` o:
+
+```bash
+php -v
+```
+
+2. Instalar **Oracle Instant Client** compatible con la arquitectura de XAMPP, normalmente 64 bits.
+3. Agregar la carpeta de Oracle Instant Client al `PATH` de Windows.
+4. Habilitar una extensión OCI8 compatible con la versión instalada de PHP en:
+
+```text
+C:\xampp\php\php.ini
+```
+
+5. Reiniciar Apache desde el Panel de Control de XAMPP.
+6. Revisar en `phpinfo()` que aparezca la sección **oci8**.
+
+> El nombre exacto de la DLL de OCI8 depende de la versión de PHP incluida en XAMPP. No se debe copiar una DLL correspondiente a otra versión de PHP porque Apache puede dejar de iniciar.
+
+### 2.3 Configurar la conexión con Oracle
+
+Editar:
+
+```text
+AV_JP_RM_BE_ESPORTS_WEB/config/database.php
+```
+
+Configurar:
+
+```php
+define('DB_USERNAME', 'ESPORTS');
+define('DB_PASSWORD', 'ESPORTS2026');
+define('DB_CONNECTION_STRING', 'localhost/XEPDB1');
+define('DB_CHARSET', 'AL32UTF8');
+```
+
+Si se utiliza otra instancia de Oracle, modificar únicamente los datos correspondientes.
+
+### 2.4 Probar la conexión
+
+Con Apache iniciado, abrir:
+
+```text
+http://localhost/AV_JP_RM_BE_ESPORTS_WEB/test_connection.php
+```
+
+Si la configuración es correcta, la página confirmará la conexión con Oracle.
+
+Luego abrir la aplicación principal:
+
+```text
+http://localhost/AV_JP_RM_BE_ESPORTS_WEB/
+```
 
 ## 3. Usuarios de prueba
-| Perfil | Usuario | Contraseña | Acceso |
+
+El script incluye cuatro cuentas iniciales:
+
+| Perfil | Usuario | Contraseña | Acceso principal |
 |---|---|---|---|
-| Administrador General | `admin` | `Admin2026!` | Todo + usuarios + auditoría |
-| Organizador / Árbitro | `organizador` | `Orga2026!` | Mantenedores (excepto usuarios), 5 gestores, 3 reportes |
-| Organizador / Árbitro | `arbitro.rojas` | `Arbitro2026!` | Igual al anterior |
-| Capitán de Equipo | `cap.tlt` (Talca Titans) | `Capitan2026!` | Jugadores de su equipo, inscripción, fixture, ranking |
+| Administrador General | `ADMIN` | `ADMIN123` | Dashboard, usuarios, 10 mantenedores, 5 gestores y 3 reportes. |
+| Organizador | `ORGANIZADOR` | `ORGANIZADOR123` | Mantenedores excepto usuarios, 5 gestores y 3 reportes. |
+| Capitán | `CAPITAN1` | `CAPITAN123` | Inscripción de su equipo, consulta de información y reportes. |
+| Capitán | `CAPITAN2` | `CAPITAN123` | Inscripción de su equipo, consulta de información y reportes. |
 
-Capitanes: `cap.` + tag del equipo en minúsculas (`cap.lrw`, `cap.cpx`, `cap.mrv`, `cap.lnx`, `cap.cqs`, `cap.ctw`, `cap.sjv`, `cap.mlh`, `cap.prp`, `cap.ucd`, `cap.tnk`).
-Tras 5 contraseñas incorrectas la cuenta queda **BLOQUEADA** (el admin la reactiva en Usuarios).
+Las contraseñas no se almacenan como texto plano. El procedimiento `AV_JP_RM_BE_SP_LOGIN` compara la contraseña utilizando `STANDARD_HASH(..., 'SHA256')`.
 
-## 4. Datos precargados (generados con los mismos procedimientos de la app)
-| Torneo | Estado | Para demostrar |
-|---|---|---|
-| Copa Maule LoL Apertura 2026 | Finalizado | Llaves de eliminación directa, podio y premios |
-| Liga Valorant Talca 2026 | Finalizado | Liga con 5 equipos (fecha libre), sanción con descuento de puntos |
-| Rocket League Cup Curicó 2026 | Finalizado | Eliminación con 6 equipos (BYE automático) |
-| Torneo CS2 Primavera UCM 2026 | En curso | Registrar resultados pendientes, corregir marcador (auditoría), liquidar premios |
-| Copa EA Sports FC Online Maule | Abierto | Inscripción 1 vs 1, sede online |
-| Liga LoL Clausura Maule 2026 | Abierto | Inscripción con plantilla y generación de fixture en vivo |
-| Clash Royale Express Primavera | Cancelado | Control de transición de estados |
+## 4. Datos precargados
 
-Un titular de **San Javier Vipers** quedó **suspendido 14 días** en el torneo de CS2: al intentar inscribirlo en otro torneo, la BD lo rechaza.
+El script incorpora un conjunto mínimo de datos para comprobar el funcionamiento de la aplicación:
 
-## 5. Guion sugerido para el video de demostración
-1. Login con contraseña errada (mensaje de intentos restantes) y luego login como `organizador`.
-2. **Mantenedores**: crear, editar y eliminar un registro (ej. un patrocinador con RUT inválido → la BD lo rechaza; luego válido).
-3. **Gestor 1**: abrir un torneo con patrocinadores (probar un cupo que exceda el aforo de la sede → rechazo).
-4. **Gestor 2**: como `cap.sjv`, inscribir San Javier Vipers en la Liga LoL Clausura incluyendo al jugador suspendido → rechazo; quitarlo → inscripción exitosa.
-5. **Gestor 3**: generar el fixture de la Liga LoL Clausura.
-6. **Gestor 4**: registrar los resultados pendientes del torneo CS2 con KDA; corregir uno (aparece en Auditoría).
-7. **Gestor 5**: aplicar una sanción y liquidar premios del torneo CS2 (podio en Fixture).
-8. **Reportes**: los 3 dashboards. 9. Como `admin`: Auditoría y accesos.
+| Elemento | Datos de prueba |
+|---|---|
+| Videojuego | `EA SPORTS FC 26` |
+| Plataforma | `PC` |
+| Sede | `UCM TALCA` |
+| Categoría | `UNIVERSITARIA` |
+| Formato | `TODOS CONTRA TODOS` |
+| Equipos | `UCM AZUL` y `UCM ROJO` |
+| Jugadores | `PLAYERAZUL` y `PLAYERROJO` |
+| Árbitro | `ARBITRO PRINCIPAL` |
+| Torneo | `COPA UCM ESPORTS` |
+| Estado inicial del torneo | `ABIERTO` |
+| Inscripciones | UCM Azul y UCM Rojo confirmados |
+| Partida | Una partida programada entre ambos equipos |
+
+Estos registros son únicamente datos de demostración y pueden reemplazarse por información más realista antes de la presentación.
+
+## 5. Módulos de la aplicación
+
+### 5.1 Control de acceso
+
+El ingreso se realiza mediante:
+
+```text
+AV_JP_RM_BE_SP_LOGIN
+```
+
+La aplicación reconoce tres perfiles:
+
+- `ADMIN`
+- `ORGANIZADOR`
+- `CAPITAN`
+
+El perfil determina las opciones disponibles en el menú de PHP.
+
+### 5.2 Diez mantenedores CRUD
+
+La aplicación implementa los siguientes mantenedores:
+
+1. Usuarios y perfiles.
+2. Videojuegos.
+3. Plataformas.
+4. Sedes / modalidades.
+5. Patrocinadores.
+6. Categorías / divisiones.
+7. Formatos de torneo.
+8. Equipos.
+9. Jugadores.
+10. Árbitros / staff.
+
+Para simplificar la implementación y facilitar la defensa, cada mantenedor sigue el mismo patrón:
+
+```text
+AV_JP_RM_BE_SP_<ENTIDAD>_GUARDAR
+AV_JP_RM_BE_SP_<ENTIDAD>_LISTAR
+AV_JP_RM_BE_SP_<ENTIDAD>_ELIMINAR
+```
+
+`GUARDAR` realiza tanto la creación como la actualización según exista o no un ID. `LISTAR` devuelve la información mediante `SYS_REFCURSOR` y `ELIMINAR` realiza el borrado.
+
+### 5.3 Cinco gestores de información
+
+| Gestor | Implementación principal |
+|---|---|
+| 1. Apertura de torneos | `AV_JP_RM_BE_SP_ABRIR_TORNEO` |
+| 2. Inscripción y roster | `AV_JP_RM_BE_SP_INSCRIBIR_EQUIPO` |
+| 3. Generación de fixture | `AV_JP_RM_BE_SP_GENERAR_FIXTURE` |
+| 4. Resultados y KDA | `AV_JP_RM_BE_SP_REGISTRAR_RESULTADO` y `AV_JP_RM_BE_SP_REGISTRAR_KDA` |
+| 5. Sanciones y premiación | `AV_JP_RM_BE_SP_REGISTRAR_SANCION` y `AV_JP_RM_BE_SP_REGISTRAR_PREMIO` |
+
+### 5.4 Tres reportes estratégicos
+
+| Reporte | Procedimiento |
+|---|---|
+| Demanda y recaudación por videojuego | `AV_JP_RM_BE_SP_REPORTE_DEMANDA_JUEGO` |
+| Ranking de jugadores MVP | `AV_JP_RM_BE_SP_REPORTE_RANKING_MVP` |
+| Ocupación de sedes y balance | `AV_JP_RM_BE_SP_REPORTE_OCUPACION_SEDES` |
 
 ## 6. Mapeo pauta → objetos de la base de datos
-| Requisito | Implementación |
-|---|---|
-| Control de acceso | `SP_LOGIN`, `FN_HASH_PASSWORD` (SHA-256), `SP_VALIDAR_PERMISO` en cada SP de escritura, `LOG_ACCESO`, bloqueo tras 5 intentos |
-| 10 mantenedores | `SP_<ENTIDAD>_LISTAR / _INSERTAR / _ACTUALIZAR / _ELIMINAR` para Usuarios, Videojuegos, Plataformas, Sedes, Patrocinadores, Categorías, Formatos, Equipos, Jugadores, Árbitros |
-| 5 gestores | `SP_ABRIR_TORNEO`, `SP_INSCRIBIR_EQUIPO`, `SP_GENERAR_FIXTURE`, `SP_REGISTRAR_RESULTADO` (+`SP_AVANZAR_RONDA`), `SP_REGISTRAR_SANCION` / `SP_LIQUIDAR_PREMIOS` |
-| 3 reportes | `SP_REPORTE_DEMANDA_JUEGO`, `SP_REPORTE_RANKING_MVP`, `SP_REPORTE_OCUPACION_SEDES` (2 cursores de salida) |
-| Funciones (15) | `FN_VALIDAR_CUPOS_TORNEO`, `FN_CALCULAR_RATIO_KDA`, `FN_VERIFICAR_ESTADO_JUGADOR`, `FN_VALIDAR_RUT`, `FN_HASH_PASSWORD`, `FN_PUNTOS_RESULTADO`, `FN_KDA_JUGADOR`, `FN_ASIGNAR_ARBITRO`, ... |
-| Secuencias (19) | `SEQ_<TABLA>` para todas las llaves primarias |
-| Cursores explícitos | `SP_LOGIN`, `SP_EQUIPO_ELIMINAR`, `SP_INSCRIBIR_EQUIPO`, `SP_GENERAR_FIXTURE`, `SP_AVANZAR_RONDA`, `SP_REGISTRAR_RESULTADO` (MVP), `SP_PROCESAR_SANCIONES_VENCIDAS`, `SP_LIQUIDAR_PREMIOS`, `FN_ASIGNAR_ARBITRO`; `SYS_REFCURSOR` en todas las lecturas |
-| Triggers (8) | `TRG_BLOQUEAR_SANCIONADO`, `TRG_AUDITORIA_MARCADORES`, `TRG_PROTEGER_PARTIDAS`, `TRG_SANCION_SUSPENDER`, `TRG_VALIDAR_JUGADOR`, `TRG_TORNEO_ESTADO`, `TRG_AUDITORIA_USUARIO`, `TRG_AUDITORIA_INSCRIPCION` |
-| Concurrencia | `SELECT ... FOR UPDATE` sobre el torneo al inscribir y generar fixture; `COMMIT/ROLLBACK` en cada SP |
-| Capa cliente | `app/lib/Database.php`: solo invoca procedimientos (`BEGIN sp_x(...); END;`); no contiene SQL de negocio |
 
-Modelo gráfico 3FN: en SQL Developer, *Archivo → Data Modeler → Importar → Diccionario de datos*, seleccionar el esquema `ESPORTS` y todas las tablas.
+| Requisito | Implementación del proyecto |
+|---|---|
+| Control de acceso | `AV_JP_RM_BE_SP_LOGIN`, perfiles `ADMIN`, `ORGANIZADOR` y `CAPITAN`, contraseña comparada mediante SHA-256. |
+| 10 mantenedores | Patrón `SP_<ENTIDAD>_GUARDAR`, `SP_<ENTIDAD>_LISTAR` y `SP_<ENTIDAD>_ELIMINAR`. |
+| 5 gestores | Apertura de torneo, inscripción/roster, fixture, resultados/KDA y sanciones/premiación. |
+| 3 reportes | Demanda por videojuego, ranking MVP y ocupación de sedes. |
+| Funciones (3) | `AV_JP_RM_BE_FN_VALIDAR_CUPOS_TORNEO`, `AV_JP_RM_BE_FN_CALCULAR_RATIO_KDA`, `AV_JP_RM_BE_FN_VERIFICAR_ESTADO_JUGADOR`. |
+| Secuencias (16) | Secuencias `AV_JP_RM_BE_SEQ_*` para las entidades que requieren IDs correlativos. |
+| Cursores explícitos | Cursor de jugadores en `AV_JP_RM_BE_SP_INSCRIBIR_EQUIPO` y cursor `OPEN / FETCH / CLOSE` en `AV_JP_RM_BE_SP_GENERAR_FIXTURE`. |
+| Cursores de salida | `SYS_REFCURSOR` en mantenedores, consultas de apoyo y reportes. |
+| Triggers (2) | `AV_JP_RM_BE_TRG_BLOQUEAR_SANCIONADO` y `AV_JP_RM_BE_TRG_AUDITORIA_MARCADORES`. |
+| Transacciones | Los procedimientos de escritura utilizan `COMMIT` y `ROLLBACK` con manejo de excepciones. |
+| Normalización | 19 tablas en 3FN, incluyendo tablas intermedias como `AV_JP_RM_BE_INSCRIPCION`, `AV_JP_RM_BE_ROSTER`, `AV_JP_RM_BE_TORNEO_PATROCINADOR` y `AV_JP_RM_BE_DETALLE_PARTIDA_JUGADOR`. |
+| Capa cliente | PHP/HTML/CSS en XAMPP. PHP invoca procedimientos Oracle mediante OCI8 y no replica la lógica principal de negocio. |
+| Capa servidor | Oracle Database concentra reglas, validaciones, secuencias, cursores, procedimientos, funciones y triggers. |
+
+## 7. Funciones principales
+
+### `AV_JP_RM_BE_FN_VALIDAR_CUPOS_TORNEO`
+
+Comprueba si un torneo todavía posee cupos disponibles antes de realizar una inscripción.
+
+### `AV_JP_RM_BE_FN_CALCULAR_RATIO_KDA`
+
+Calcula el indicador KDA de un jugador utilizando kills, deaths y assists.
+
+### `AV_JP_RM_BE_FN_VERIFICAR_ESTADO_JUGADOR`
+
+Comprueba si un jugador está activo o posee una suspensión vigente.
+
+## 8. Triggers de monitoreo
+
+### `AV_JP_RM_BE_TRG_BLOQUEAR_SANCIONADO`
+
+Se ejecuta antes de insertar o modificar un jugador en un roster. Si el jugador está suspendido o inactivo, Oracle rechaza la operación.
+
+### `AV_JP_RM_BE_TRG_AUDITORIA_MARCADORES`
+
+Se ejecuta después de modificar los marcadores de una partida y registra los valores anteriores y nuevos en `AV_JP_RM_BE_AUDITORIA`.
+
+## 9. Guion sugerido para la demostración
+
+1. Abrir `test_connection.php` y demostrar que PHP se encuentra conectado a Oracle.
+2. Intentar iniciar sesión con una contraseña incorrecta y luego ingresar como `ORGANIZADOR`.
+3. Entrar a un mantenedor, por ejemplo **Patrocinadores**, y demostrar crear, editar, listar y eliminar.
+4. Crear
