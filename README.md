@@ -1,6 +1,6 @@
 ---------------DATABASE---------------
 
-
+## PASO 1: Encender servicios de Oracle XE en Windows
 Encender servicios de Oracle XE en Windows
 *(Solo si aparece el error `ORA-12541: No hay ningún listener`)*
 
@@ -9,22 +9,43 @@ Encender servicios de Oracle XE en Windows
    - **`OracleOraDB21Home1TNSListener`**
    - **`OracleServiceXE`**
 
+---
 
-Abrir SQL Developer y hacer clic en el botón verde `+` (Nueva conexión).
-2. Configurar la conexión de administrador con estos datos exactos:
+## PASO 2: Crear el usuario `ESPORTS_DB` en SQL Developer
+*(Se realiza una única vez en cada computador)*
+
+1. Abrir **Oracle SQL Developer** y hacer clic en el botón verde **`+`** (*Nueva conexión*).
+2. Configurar la conexión de administrador con estos datos:
    - **Name:** `SYSTEM_XE`
    - **Usuario:** `SYSTEM`
-   - **Contraseña:** *(la clave que definiste al instalar Oracle XE)*
+   - **Contraseña:** *(la clave definida al instalar Oracle XE)*
    - **Nombre del Host:** `localhost`
    - **Puerto:** `1521`
    - **Nombre del Servicio:** *(marcar el círculo de Nombre del Servicio, NO SID)* -> **`XEPDB1`**
-3. Presionar **Probar** (debe decir *Estado: Correcto*) y luego **Conectar**.
+3. Presionar **Probar** (debe indicar *Estado: Correcto*) y luego **Conectar**.
 4. En la hoja de trabajo SQL que se abre, pegar y ejecutar (`F5`) estas dos líneas:
    ```sql
    CREATE USER ESPORTS_DB IDENTIFIED BY esports2026;
    GRANT CONNECT, RESOURCE, UNLIMITED TABLESPACE TO ESPORTS_DB;
+   ```
+---
+   
+## PASO 3: Conectar `ESPORTS_DB` y cargar toda la Base de Datos
 
--Abrir Oracle SQL Developer, conectarse como ESPORTS_DB (clave esports2026), abrir database/main.sql y ejecutar todo con F5.
+1. En **Oracle SQL Developer**, hacer clic nuevamente en el botón verde **`+`** (*Nueva conexión*) y rellenar los campos exactos:
+   - **Name:** `Proyecto_Esports`
+   - **Usuario:** `ESPORTS_DB`
+   - **Contraseña:** `esports2026`
+   - **Tipo de Conexión:** `Básico`
+   - **Nombre del Host:** `localhost`
+   - **Puerto:** `1521`
+   - **Nombre del Servicio:** *(marcar el círculo de Nombre del Servicio, NO SID)* -> **`XEPDB1`**
+2. Presionar **Probar** (debe mostrar *Estado: Correcto*), luego **Guardar** y finalmente **Conectar**.
+3. En el menú superior de SQL Developer, ir a **Archivo -> Abrir**, buscar la carpeta descargada del repositorio y seleccionar **`database/main.sql`**.
+4. Presionar **`F5`** (*Ejecutar script*) o el ícono de la hoja con flecha verde y esperar a que termine la ejecución en la pestaña *Salida de Script*.
+   - **Verificación:** Al desplegar la conexión `Proyecto_Esports` en el panel izquierdo deben aparecer **19 Tablas**, **19 Secuencias**, **3 Funciones**, **3 Disparadores (Triggers)** y **38 Procedimientos** con el prefijo `AV_JP_RM_BE_`, además de los datos iniciales y registros de auditoría cargados.
+
+---
 
 
 
