@@ -14,7 +14,7 @@ Proyecto final orientado a la administración de torneos de Esports mediante una
 | `MODELO_3FN.mdj` | Modelo gráfico de la base de datos en 3FN para abrir y editar en StarUML. |
 | `app/` | Aplicación web PHP desarrollada para XAMPP y conectada a Oracle mediante OCI8. |
 | `app/sql/main.sql` | Copia del script Oracle incluida dentro del proyecto web. |
-| `AV_JP_RM_BE_ESPORTS_WEB/MAPA_PARA_PRESENTACION.txt` | Resumen de los módulos y objetos PL/SQL utilizados, pensado como apoyo para la defensa. |
+| `MAPA_PARA_PRESENTACION.txt` | Resumen de los módulos y objetos PL/SQL utilizados, pensado como apoyo para la defensa. |
 | `README.md` | Instrucciones generales de instalación, ejecución y demostración del proyecto. |
 
 ## 1. Base de datos — Oracle XE 21c
