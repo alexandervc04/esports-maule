@@ -1,11 +1,14 @@
----------------DATABASE---------------
+# Sistema de Gestión de Torneos Esports (`ESPORTS_DB`)
+Proyecto Base de Datos (ECI224) — Universidad Católica del Maule  
+**Prefijo de objetos:** `AV_JP_RM_BE_`
+
+---
 
 ## PASO 1: Encender servicios de Oracle XE en Windows
-Encender servicios de Oracle XE en Windows
-*(Solo si aparece el error `ORA-12541: No hay ningún listener`)*
+*(Realizar solo si aparece el error `ORA-12541: No hay ningún listener en host localhost port 1521`)*
 
 1. Presionar `Win + R`, escribir **`services.msc`** y presionar **Enter**.
-2. Buscar en la lista los siguientes dos servicios, hacer clic derecho sobre cada uno y presionar **Iniciar** (deben quedar en estado *En ejecución*):
+2. Buscar en la lista los siguientes dos servicios, hacer clic derecho sobre cada uno y presionar **Iniciar** (ambos deben quedar en estado *En ejecución*):
    - **`OracleOraDB21Home1TNSListener`**
    - **`OracleServiceXE`**
 
@@ -28,8 +31,9 @@ Encender servicios de Oracle XE en Windows
    CREATE USER ESPORTS_DB IDENTIFIED BY esports2026;
    GRANT CONNECT, RESOURCE, UNLIMITED TABLESPACE TO ESPORTS_DB;
    ```
+
 ---
-   
+
 ## PASO 3: Conectar `ESPORTS_DB` y cargar toda la Base de Datos
 
 1. En **Oracle SQL Developer**, hacer clic nuevamente en el botón verde **`+`** (*Nueva conexión*) y rellenar los campos exactos:
@@ -47,28 +51,34 @@ Encender servicios de Oracle XE en Windows
 
 ---
 
+## PASO 4: Instalar XAMPP y activar el driver de Oracle (`oci8`)
 
+1. Instalar **XAMPP** (versión con **PHP 8.5 x64**) manteniendo la ruta por defecto **`C:\xampp`**.
+2. Copiar el archivo **`driver/php_oci8_19.dll`** de este repositorio y pegarlo dentro de:
+   ```text
+   C:\xampp\php\ext\
+   ```
+3. Abrir el panel de control de **XAMPP**, hacer clic en **Config** (en la fila de **Apache**) y abrir **`PHP (php.ini)`**.
+4. Buscar la línea `extension=mysqli` (`Ctrl + B`), presionar **Enter** debajo de ella y agregar exactamente:
+   ```ini
+   extension=oci8_19
+   ```
+5. Guardar el archivo (`Ctrl + S`).
+6. En el panel de **XAMPP**, presionar **Start** en **Apache** (debe quedar resaltado en verde con los puertos `80, 443`).
 
----------------DRIVER---------------
+---
 
--Instalar XAMPP (versión con PHP 8.5 x64 en C:\xampp), copiar driver/php_oci8_19.dll dentro de C:\xampp\php\ext\
+## PASO 5: Montar y abrir la Página Web
 
--Abrir C:\xampp\php\php.ini, agregar la línea extension=oci8_19 (debajo de extension=mysqli) y presionar Start en Apache
-
-
-
-
----------------PÁGINA-WEB---------------
-
--Copiar la carpeta esports_maule dentro de C:\xampp\htdocs\
-
--Entrar en el navegador a http://localhost/esports_maule/ e iniciar sesión con admin@esportsmaule.cl / admin123.
-
-
-
-
----------------DATO---------------
-
--De momento en la carpeta esport_maule(PÁGINA-WEB) tiene 3 carpetas "vacias": mantenedores, gestores y reportes.
-
--El .gitkeep es para que GitHub no las borre por ser carpetas vacias. Ahi se suponen que irian archivos PHP.
+1. Copiar la carpeta completa **`esports_maule`** de este repositorio y pegarla dentro de:
+   ```text
+   C:\xampp\htdocs\
+   ```
+   *(Debe quedar como `C:\xampp\htdocs\esports_maule\`)*
+2. Abrir el navegador y entrar a:
+   ```text
+   http://localhost/esports_maule/
+   ```
+3. Iniciar sesión con las credenciales de demostración:
+   - **Correo:** `admin@esportsmaule.cl`
+   - **Contraseña:** `admin123`
