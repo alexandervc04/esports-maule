@@ -4,6 +4,7 @@ UCM · ECI224 Base de Datos · Evaluación 3 (Proyecto Final) · Oracle Database
 ## Contenido
 | Archivo | Descripción |
 |---|---|
+| `limpieza.sql` | Limpia por completo la base de datos para ingresar todas las tablas, procedures, triggers, etc nuevamente |
 | `script.sql` | Script completo y estructurado: tablas 3FN, secuencias, funciones, procedimientos, cursores, triggers y datos de prueba |
 | `app/` | Aplicación web PHP (arquitectura de 2 capas: cliente PHP ↔ servidor Oracle con la lógica en PL/SQL) |
 
