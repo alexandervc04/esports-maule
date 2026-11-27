@@ -1,9 +1,6 @@
 # Sistema de Gestión de Torneos de Esports
 
 UCM · ECI224 Base de Datos · Evaluación 3 (Proyecto Final) · Oracle Database 21c XE + PHP 8 + XAMPP + OCI8
-
-Proyecto final orientado a la administración de torneos de Esports mediante una aplicación web en PHP conectada a Oracle. La solución utiliza una arquitectura de dos capas: la interfaz PHP se encarga de la presentación e invocación de objetos, mientras que la lógica principal de negocio reside en Oracle mediante PL/SQL.
-
 > Todos los objetos principales de la base de datos utilizan el prefijo `AV_JP_RM_BE_`.
 
 ## Contenido del proyecto
