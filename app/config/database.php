@@ -1,0 +1,12 @@
+<?php
+/*
+ * CONFIGURACION ORACLE PARA XAMPP.
+ * MODIFICA ESTOS 3 VALORES SEGUN TU INSTALACION.
+ * EJEMPLOS DE CADENA:
+ *   localhost/XEPDB1   (Oracle XE 18c/21c)
+ *   localhost/FREEPDB1 (Oracle Database Free 23ai)
+ */
+define('DB_USERNAME', 'TU_USUARIO_ORACLE');
+define('DB_PASSWORD', 'TU_PASSWORD_ORACLE');
+define('DB_CONNECTION_STRING', 'localhost/XEPDB1');
+define('DB_CHARSET', 'AL32UTF8');

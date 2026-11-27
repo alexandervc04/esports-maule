@@ -1,0 +1,12 @@
+<?php
+require_once __DIR__.'/includes/auth.php'; require_login(); require_once __DIR__.'/includes/helpers.php';
+$pageTitle='Dashboard';
+try {
+ $torneos=lookup_rows('torneos'); $equipos=lookup_rows('equipos'); $jugadores=lookup_rows('jugadores'); $videojuegos=lookup_rows('videojuegos');
+} catch(Throwable $e){ $torneos=$equipos=$jugadores=$videojuegos=[]; $dbError=$e->getMessage(); }
+include __DIR__.'/includes/header.php'; ?>
+<main class="content"><div class="page-head"><div><h1>Panel principal</h1><p>Resumen operativo del Sistema de Gestión de Torneos de Esports.</p></div><a class="btn btn-ghost" href="test_connection.php">Probar conexión Oracle</a></div>
+<?php if(!empty($dbError)):?><div class="callout" style="border-color:#ff667d"><?=h($dbError)?></div><?php endif;?>
+<div class="grid grid-4"><div class="panel stat"><span class="ico">🏆</span><div class="n"><?=count($torneos)?></div><div class="l">Torneos</div></div><div class="panel stat"><span class="ico">🛡️</span><div class="n"><?=count($equipos)?></div><div class="l">Equipos</div></div><div class="panel stat"><span class="ico">⚔️</span><div class="n"><?=count($jugadores)?></div><div class="l">Jugadores</div></div><div class="panel stat"><span class="ico">🎮</span><div class="n"><?=count($videojuegos)?></div><div class="l">Videojuegos</div></div></div>
+<div class="grid grid-2" style="margin-top:18px"><section class="panel"><h2 class="section-title">Flujo recomendado para la demostración</h2><ol class="muted"><li>Crear o revisar catálogos en los mantenedores.</li><li>Abrir un torneo cruzando videojuego, sede, formato y categoría.</li><li>Inscribir equipos; Oracle genera el roster automáticamente.</li><li>Generar el fixture mediante el cursor explícito.</li><li>Registrar resultado y KDA de los jugadores.</li><li>Aplicar sanciones o registrar la premiación.</li><li>Mostrar los tres reportes estratégicos.</li></ol></section><section class="panel"><h2 class="section-title">Arquitectura</h2><div class="callout"><strong>PHP / XAMPP</strong> actúa como capa cliente. La lógica principal permanece en <strong>Oracle PL/SQL</strong>.</div><p class="muted">Las operaciones de esta web llaman directamente a procedimientos almacenados del script <span class="code">AV_JP_RM_BE_*</span>. Los cursores devuelven los listados y los triggers se ejecutan automáticamente en Oracle.</p></section></div>
+</main><?php include __DIR__.'/includes/footer.php'; ?>
