@@ -11,7 +11,7 @@ Proyecto final orientado a la administración de torneos de Esports mediante una
 | Archivo / carpeta | Descripción |
 |---|---|
 | `script.sql` | Script completo de Oracle: 19 tablas en 3FN, 16 secuencias, 3 funciones, 46 procedimientos, cursores, 2 triggers y datos de prueba. |
-| `AV_JP_RM_BE_MODELO_3FN_STARUML.mdj` | Modelo gráfico de la base de datos en 3FN para abrir y editar en StarUML. |
+| `MODELO_3FN.mdj` | Modelo gráfico de la base de datos en 3FN para abrir y editar en StarUML. |
 | `app/` | Aplicación web PHP desarrollada para XAMPP y conectada a Oracle mediante OCI8. |
 | `app/sql/main.sql` | Copia del script Oracle incluida dentro del proyecto web. |
 | `AV_JP_RM_BE_ESPORTS_WEB/MAPA_PARA_PRESENTACION.txt` | Resumen de los módulos y objetos PL/SQL utilizados, pensado como apoyo para la defensa. |
