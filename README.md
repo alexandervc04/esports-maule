@@ -4,10 +4,10 @@
 Encender servicios de Oracle XE en Windows
 *(Solo si aparece el error `ORA-12541: No hay ningún listener`)*
 
-1. Presionar Win + R, escribir services.msc
+1. Presionar `Win + R`, escribir **`services.msc`** y presionar **Enter**.
 2. Buscar en la lista los siguientes dos servicios, hacer clic derecho sobre cada uno y presionar **Iniciar** (deben quedar en estado *En ejecución*):
-   - OracleOraDB21Home1TNSListener
-   - OracleServiceXE
+   - **`OracleOraDB21Home1TNSListener`**
+   - **`OracleServiceXE`**
 
 
 Abrir SQL Developer y hacer clic en el botón verde `+` (Nueva conexión).
