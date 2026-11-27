@@ -46,7 +46,7 @@ Después conectarse en SQL Developer con:
 Abrir el archivo:
 
 ```text
-AV_JP_RM_BE_PROYECTO_SIMPLIFICADO.sql
+script.sql
 ```
 
 y ejecutarlo en SQL Developer utilizando **Ejecutar script (F5)**.
@@ -80,7 +80,7 @@ El resultado esperado es **0 filas**.
 La aplicación se encuentra en:
 
 ```text
-AV_JP_RM_BE_ESPORTS_WEB/
+app/
 ```
 
 ### 2.1 Copiar el proyecto a XAMPP
@@ -94,7 +94,7 @@ C:\xampp\htdocs\
 Debe quedar aproximadamente así:
 
 ```text
-C:\xampp\htdocs\AV_JP_RM_BE_ESPORTS_WEB\
+C:\xampp\htdocs\app\
 ```
 
 ### 2.2 Instalar y habilitar OCI8
@@ -125,7 +125,7 @@ C:\xampp\php\php.ini
 Editar:
 
 ```text
-AV_JP_RM_BE_ESPORTS_WEB/config/database.php
+app/config/database.php
 ```
 
 Configurar:
@@ -144,7 +144,7 @@ Si se utiliza otra instancia de Oracle, modificar únicamente los datos correspo
 Con Apache iniciado, abrir:
 
 ```text
-http://localhost/AV_JP_RM_BE_ESPORTS_WEB/test_connection.php
+http://localhost/app/test_connection.php
 ```
 
 Si la configuración es correcta, la página confirmará la conexión con Oracle.
@@ -152,7 +152,7 @@ Si la configuración es correcta, la página confirmará la conexión con Oracle
 Luego abrir la aplicación principal:
 
 ```text
-http://localhost/AV_JP_RM_BE_ESPORTS_WEB/
+http://localhost/app/
 ```
 
 ## 3. Usuarios de prueba
