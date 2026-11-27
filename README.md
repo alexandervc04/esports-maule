@@ -7,6 +7,7 @@ UCM · ECI224 Base de Datos · Evaluación 3 (Proyecto Final) · Oracle Database
 
 | Archivo / carpeta | Descripción |
 |---|---|
+| `limpieza.sql` | Limpia la base de datos borrando todas las tablas, trigger, procedures, etc. |
 | `script.sql` | Script completo de Oracle: 19 tablas en 3FN, 16 secuencias, 3 funciones, 46 procedimientos, cursores, 2 triggers y datos de prueba. |
 | `MODELO_3FN.mdj` | Modelo gráfico de la base de datos en 3FN para abrir y editar en StarUML. |
 | `app/` | Aplicación web PHP desarrollada para XAMPP y conectada a Oracle mediante OCI8. |
