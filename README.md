@@ -1,8 +1,3 @@
-# Sistema de Gestión de Torneos Esports (`ESPORTS_DB`)
-Proyecto Base de Datos (ECI224) — Universidad Católica del Maule  
-**Prefijo de objetos:** `AV_JP_RM_BE_`
-
----
 
 ## PASO 1: Encender servicios de Oracle XE en Windows
 *(Realizar solo si aparece el error `ORA-12541: No hay ningún listener en host localhost port 1521`)*
